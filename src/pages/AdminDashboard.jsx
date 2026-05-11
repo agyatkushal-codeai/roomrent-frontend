@@ -47,6 +47,19 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Permanently delete this user and all their data? This cannot be undone.')) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      toast.success('User deleted successfully');
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to delete user');
+    }
+  };
+
   const handleDeleteRoom = async (id) => {
     if (!window.confirm('Delete this listing as admin?')) return;
     try {
@@ -169,7 +182,11 @@ const AdminDashboard = () => {
                     >
                       <Ban size={18} />
                     </button>
-                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                    <button
+                      onClick={() => handleDeleteUser(u._id)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      title="Delete User"
+                    >
                       <Trash2 size={18} />
                     </button>
                   </td>
